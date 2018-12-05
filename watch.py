@@ -13,7 +13,7 @@ class Application(Frame):
 
         # The 'menu' of the application. The selection labels
         stopwatch_label = Label(master, text="Stopwatch", font=("Helvetica", 20))
-        stopwatch_window = canvas.create_window(0,0, window=stopwatch_label)
+        stopwatch_window = canvas.create_window(0,0, window=stopwatch_label)q
 
 
 watch = Tk()
