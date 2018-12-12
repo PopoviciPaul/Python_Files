@@ -9,14 +9,14 @@ class Application(Frame):
     def __init__(self, master):
         super(Application, self).__init__(master)
         self.grid()
-        self.chosen_gui = "Stopwatch"
+        self.chosen_gui = "StopWatch"
         self.canvas = Canvas(self, width=800, height = 640, bg="gray") # IF YOU DO .PACK() HERE IT WILL RETURN NONE AND THEN YOU WILL HAVE PROBLEMS BECAUSE .PACK() RETURNS A 'NONE' TYPE OBJECT
         self.create_buttons()
         self.canvas.grid()
 
     def selectOption(self, passed_option):
         self.chosen_gui = passed_option
-        print("Chosen functionality: %s" % self.chosen_gui)
+        self.update_tool_gui()
 
     def create_buttons(self):
         # The 'menu' of the application. The selection labels
@@ -31,7 +31,11 @@ class Application(Frame):
     # This function updates the gui to correspond to the chosen app type: stopwatch, countdown or watch
     def update_tool_gui(self):
         if self.chosen_gui == "StopWatch":
-            print("Chosen functionality: %s" % self.chosen_gui)
+            #print("Chosen functionality: %s" % self.chosen_gui)
+            digits = Label(self, text="00:00", anchor=CENTER)
+            digits.config(font=("Courier", 200))
+            digits_window = self.canvas.create_window(0, 320, anchor="w", width=800, height=540, window=digits)
+
         elif self.chosen_gui == "CountDown":
             print("Chosen functionality: %s" % self.chosen_gui)
         else:
