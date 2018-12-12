@@ -3,25 +3,43 @@ from tkinter.ttk import *
 from tkinter import messagebox
 from tkinter import Menu
 
+
 # Define the application class where we will implement our widgets
 class Application(Frame):
     def __init__(self, master):
         super(Application, self).__init__(master)
-        # CANVAS COLOUR DEFAULTS TO THE COLOUR OF THE WORKING WINDOW
-        canvas = Canvas(master, width=800, height = 640, bg="gray") # IF YOU DO .PACK() HERE IT WILL RETURN NONE AND THEN YOU WILL HAVE PROBLEMS BECAUSE .PACK() RETURNS A 'NONE' TYPE OBJECT
-        canvas.place(relx=0.5, rely=0.5, anchor=CENTER)
+        self.grid()
+        self.chosen_gui = "Stopwatch"
+        self.canvas = Canvas(self, width=800, height = 640, bg="gray") # IF YOU DO .PACK() HERE IT WILL RETURN NONE AND THEN YOU WILL HAVE PROBLEMS BECAUSE .PACK() RETURNS A 'NONE' TYPE OBJECT
+        self.create_buttons()
+        self.canvas.grid()
 
+    def selectOption(self, passed_option):
+        self.chosen_gui = passed_option
+        print("Chosen functionality: %s" % self.chosen_gui)
+
+    def create_buttons(self):
         # The 'menu' of the application. The selection labels
-        stopwatch_label = Label(master, text="Stopwatch", font=("Helvetica", 20))
-        stopwatch_window = canvas.create_window(0,0, window=stopwatch_label)q
+        stopwatch_select = Button(self, text="Stopwatch", command=lambda : self.selectOption("StopWatch"))
+        countdown_select = Button(self, text="CountDown", command=lambda : self.selectOption("CountDown"))
+        watch_select = Button(self, text="Watch", command=lambda : self.selectOption("Watch"))
 
+        stopwatch_window = self.canvas.create_window(0, 0, anchor="nw", width=250, window=stopwatch_select, height=50) # see the python reference book to understand about the canvas
+        countdown_window = self.canvas.create_window(250, 0, anchor="nw", width=300, window=countdown_select, height=50)
+        watch_window = self.canvas.create_window(550, 0, anchor="nw", width=250, window=watch_select, height=50)
+
+    # This function updates the gui to correspond to the chosen app type: stopwatch, countdown or watch
+    def update_tool_gui(self):
+        if self.chosen_gui == "StopWatch":
+            print("Chosen functionality: %s" % self.chosen_gui)
+        elif self.chosen_gui == "CountDown":
+            print("Chosen functionality: %s" % self.chosen_gui)
+        else:
+            print("Chosen functionality: %s" % self.chosen_gui)
 
 watch = Tk()
-
 watch.title("Watch")
-
 app = Application(watch)
-
 app_width = 800
 app_height = 640
 
