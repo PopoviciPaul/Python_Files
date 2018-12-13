@@ -35,6 +35,10 @@ class Application(Frame):
             digits = Label(self, text="00:00", anchor=CENTER)
             digits.config(font=("Courier", 200))
             digits_window = self.canvas.create_window(0, 320, anchor="w", width=800, height=540, window=digits)
+            start_button = Button(self, text="Start")
+            stop_button = Button(self, text="Stop/Reset")
+
+            start_button_window = self.canvas.create_window(0, 640, anchor="sw", width=400, window=start_button, height=50)
 
         elif self.chosen_gui == "CountDown":
             print("Chosen functionality: %s" % self.chosen_gui)
