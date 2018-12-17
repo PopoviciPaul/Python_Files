@@ -13,6 +13,7 @@ class Application(tk.Frame):
         self.grid()
         self.current_time = StringVar() # the variable which displays the current time on the stopwatch
         self.current_time.set("00:00")
+        self.stop_command = 0
 
         self.chosen_gui = "StopWatch"
         self.canvas = Canvas(self, width=800, height = 640, bg="gray") # IF YOU DO .PACK() HERE IT WILL RETURN NONE AND THEN YOU WILL HAVE PROBLEMS BECAUSE .PACK() RETURNS A 'NONE' TYPE OBJECT
@@ -35,9 +36,20 @@ class Application(tk.Frame):
 
     def startCounter(self, start_from):
         #start_from = type str: represents the time from which to re(start) the timer
-        start_time = time.time()
-        print(start_time)
+        self.stop_command = 0
 
+        while self.stop_command == 0:
+            #datetime.datetime.now().minute
+            self.current_time.set(datetime.datetime.now().minute)
+
+    def stopCounter(self):
+        self.stop_command += 1
+        if self.stop_command == 1:
+            print("shit")
+        elif self.stop_command == 2:
+            print("doubleshit")
+        else:
+            print("morethandoubleshit")
 
     # This function updates the gui to correspond to the chosen app type: stopwatch, countdown or watch
     def update_tool_gui(self):
@@ -49,7 +61,7 @@ class Application(tk.Frame):
             digits_window = self.canvas.create_window(0, 320, anchor="w", width=800, height=540, window=digits)
 
             start_button = tk.Button(self, text="Start", bg="green2", command=lambda : self.startCounter(self.current_time.get()))
-            stop_button = tk.Button(self, text="Stop/Reset", bg="red")
+            stop_button = tk.Button(self, text="Stop/Reset", bg="red", command=lambda : self.stopCounter())
             start_button_window = self.canvas.create_window(0, 640, anchor="sw", width=400, height=50, window=start_button)
             stop_button_window = self.canvas.create_window(400, 640, anchor="sw", width=400, height=50, window=stop_button)
 
