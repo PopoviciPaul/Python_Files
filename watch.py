@@ -5,6 +5,7 @@ from tkinter import messagebox
 from tkinter import Menu
 import time
 import datetime
+import re
 
 # Define the application class where we will implement our widgets
 class Application(tk.Frame):
@@ -12,7 +13,7 @@ class Application(tk.Frame):
         super(Application, self).__init__(master)
         self.grid()
         self.current_time = StringVar() # the variable which displays the current time on the stopwatch
-        self.current_time.set("00:00")
+        self.current_time.set("98:45")
         self.stop_command = 0
 
         self.chosen_gui = "StopWatch"
@@ -35,21 +36,44 @@ class Application(tk.Frame):
         watch_window = self.canvas.create_window(550, 0, anchor="nw", width=250, height=50, window=watch_select)
 
     def startCounter(self, start_from):
-        #start_from = type str: represents the time from which to re(start) the timer
-        self.stop_command = 0
+        if self.stop_command == 0:
+            # start_from = current timer value(at first is 00)
+            regex_seconds = r"\d+$"
+            regex_minutes = r"^\d+"
+            seconds = re.findall(regex_seconds, start_from)
+            minutes = re.findall(regex_minutes, start_from)
 
-        while self.stop_command == 0:
-            #datetime.datetime.now().minute
-            self.current_time.set(datetime.datetime.now().minute)
+            if seconds[0][0] == '0':
+                seconds = seconds[0][1]
+            else:
+                seconds = seconds[0]
+            seconds = int(seconds) # check the value of seconds
+            seconds += 1
+
+            if minutes[0][0] == '0':
+                minutes = minutes[0][1]
+            else:
+                minutes = minutes[0]
+            minutes = int(minutes) # check the value of minutes
+
+            if minutes <= 98:            # when minutes reach 99 stop don't do anything
+                if seconds == 60:
+                    minutes = minutes+1
+                    seconds = 0
+                self.current_time.set("{0:0>2}".format(minutes) + ":" + "{0:0>2}".format(seconds))
+                start_from = self.current_time.get() # update the start_time for the next loop
+            else:
+                pass
+
+        elif self.stop_command == 1:
+            pass
+        elif self.stop_command == 2:
+            pass
+        self.master.after(1000, self.startCounter, start_from)
 
     def stopCounter(self):
-        self.stop_command += 1
-        if self.stop_command == 1:
-            print("shit")
-        elif self.stop_command == 2:
-            print("doubleshit")
-        else:
-            print("morethandoubleshit")
+        self.stop_command = 1
+
 
     # This function updates the gui to correspond to the chosen app type: stopwatch, countdown or watch
     def update_tool_gui(self):
