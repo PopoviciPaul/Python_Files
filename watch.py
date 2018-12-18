@@ -14,7 +14,8 @@ class Application(tk.Frame):
         self.grid()
         self.current_time = StringVar() # the variable which displays the current time on the stopwatch
         self.current_time.set("98:45")
-        self.stop_command = 0
+        self.pause_reset_command = 0
+        self.counter = 0
 
         self.chosen_gui = "StopWatch"
         self.canvas = Canvas(self, width=800, height = 640, bg="gray") # IF YOU DO .PACK() HERE IT WILL RETURN NONE AND THEN YOU WILL HAVE PROBLEMS BECAUSE .PACK() RETURNS A 'NONE' TYPE OBJECT
@@ -36,7 +37,7 @@ class Application(tk.Frame):
         watch_window = self.canvas.create_window(550, 0, anchor="nw", width=250, height=50, window=watch_select)
 
     def startCounter(self, start_from):
-        if self.stop_command == 0:
+        if self.pause_reset_command == 0:
             # start_from = current timer value(at first is 00)
             regex_seconds = r"\d+$"
             regex_minutes = r"^\d+"
@@ -64,16 +65,19 @@ class Application(tk.Frame):
                 start_from = self.current_time.get() # update the start_time for the next loop
             else:
                 pass
+            self.master.after(1000, self.startCounter, start_from)
 
-        elif self.stop_command == 1:
-            pass
-        elif self.stop_command == 2:
-            pass
-        self.master.after(1000, self.startCounter, start_from)
+        elif self.pause_reset_command == 1:                # implement pause functionality here
+            pass                                           # do nothing just wait for re-start or reset
+
+        else:                                              # implement reset functionality here
+            pass                                           # reset functionality implemented in StopCounter function
 
     def stopCounter(self):
-        self.stop_command = 1
-
+        self.pause_reset_command += 1
+        if self.pause_reset_command == 2:
+            self.current_time.set("00:00")                 # reset the timer than wait to start again
+            self.pause_reset_command = 0
 
     # This function updates the gui to correspond to the chosen app type: stopwatch, countdown or watch
     def update_tool_gui(self):
