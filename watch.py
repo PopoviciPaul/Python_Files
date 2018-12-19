@@ -12,7 +12,7 @@ class Application(tk.Frame):
         super(Application, self).__init__(master)
         self.grid()
         self.current_time = StringVar() # the variable which displays the current time on the stopwatch
-        self.current_time.set("98:45")
+        self.current_time.set("00:00")
         self.pause_reset_command = -1
 
         self.chosen_gui = "StopWatch"
@@ -43,11 +43,39 @@ class Application(tk.Frame):
     def counterCyclic(self):
         if self.chosen_gui == "StopWatch":
             if self.pause_reset_command == 0:
-                print("cyclic every second")
+                current_time = self.current_time.get()
+                regex_seconds = r"\d+$"
+                regex_minutes = r"^\d+"
+                seconds = re.findall(regex_seconds, current_time)
+                minutes = re.findall(regex_minutes, current_time)
+
+                if seconds[0][0] == '0':
+                    seconds = seconds[0][1]
+                else:
+                    seconds = seconds[0]
+                seconds = int(seconds) # check the value of seconds
+                seconds += 1
+
+                if minutes[0][0] == '0':
+                    minutes = minutes[0][1]
+                else:
+                    minutes = minutes[0]
+                minutes = int(minutes) # check the value of minutes
+
+                if minutes <= 98:
+                    if seconds == 60:
+                        minutes = minutes+1
+                        seconds = 0
+                else:
+                    pass
+
+                self.current_time.set("{0:0>2}".format(minutes) + ":" + "{0:0>2}".format(seconds))
+
             if self.pause_reset_command == 1:
-                print("paused")
+                pass
+
             if self.pause_reset_command == 2:
-                print("reset")
+                self.current_time.set("00:00")
                 self.pause_reset_command = -1
             if self.pause_reset_command == -1:
                 pass
@@ -57,6 +85,7 @@ class Application(tk.Frame):
     # This function updates the gui to correspond to the chosen app type: stopwatch, countdown or watch
     def update_tool_gui(self):
         if self.chosen_gui == "StopWatch":
+            self.current_time.set("00:00") # when you reset to stopwatch the timer gets reseted
             #print("Chosen functionality: %s" % self.chosen_gui)
             digits = Label(self, textvariable=self.current_time, background="lavender", anchor=CENTER)
             digits.config(font=("Courier", 200))
