@@ -5,7 +5,6 @@ from tkinter import messagebox
 from tkinter import Menu
 import re
 
-
 # Define the application class where we will implement our widgets
 class Application(tk.Frame):
     def __init__(self, master):
@@ -16,9 +15,11 @@ class Application(tk.Frame):
         self.pause_reset_command = -1
 
         self.chosen_gui = "StopWatch"
-        self.canvas = Canvas(self, width=800, height = 640, bg="gray") # IF YOU DO .PACK() HERE IT WILL RETURN NONE AND THEN YOU WILL HAVE PROBLEMS BECAUSE .PACK() RETURNS A 'NONE' TYPE OBJECT
+        self.canvas_funct_buttons = Canvas(self, width=800, height = 50, bg="gray") # IF YOU DO .PACK() HERE IT WILL RETURN NONE AND THEN YOU WILL HAVE PROBLEMS BECAUSE .PACK() RETURNS A 'NONE' TYPE OBJECT
+        self.canvas_funct_app = Canvas(self, width=800, height = 590, bg="gray")
         self.create_buttons()
-        self.canvas.grid()
+        self.canvas_funct_buttons.pack()
+        self.canvas_funct_app.pack()
 
     def selectOption(self, passed_option):
         self.chosen_gui = passed_option
@@ -30,17 +31,19 @@ class Application(tk.Frame):
         countdown_select = tk.Button(self, text="CountDown", bg="gold4", command=lambda : self.selectOption("CountDown"))
         watch_select = tk.Button(self, text="Watch", bg="gold4", command=lambda : self.selectOption("Watch"))
 
-        stopwatch_window = self.canvas.create_window(0, 0, anchor="nw", width=250, height=50, window=stopwatch_select) # see the python reference book to understand about the canvas
-        countdown_window = self.canvas.create_window(250, 0, anchor="nw", width=300, height=50, window=countdown_select)
-        watch_window = self.canvas.create_window(550, 0, anchor="nw", width=250, height=50, window=watch_select)
+        stopwatch_window = self.canvas_funct_buttons.create_window(0, 0, anchor="nw", width=250, height=50, window=stopwatch_select) # see the python reference book to understand about the canvas_funct_buttons
+        countdown_window = self.canvas_funct_buttons.create_window(250, 0, anchor="nw", width=300, height=50, window=countdown_select)
+        watch_window = self.canvas_funct_buttons.create_window(550, 0, anchor="nw", width=250, height=50, window=watch_select)
 
+    ########################################################## StopWatch functionality ################################################################################
     def startCounter(self):
         self.pause_reset_command = 0
 
     def stopCounter(self):
-        self.pause_reset_command += 1
+        if self.pause_reset_command != -1: # if the counter is in idle don't need to stop it
+            self.pause_reset_command += 1
 
-    def counterCyclic(self):
+    def stopWatchCyclic(self):
         if self.chosen_gui == "StopWatch":
             if self.pause_reset_command == 0:
                 current_time = self.current_time.get()
@@ -77,33 +80,47 @@ class Application(tk.Frame):
             if self.pause_reset_command == 2:
                 self.current_time.set("00:00")
                 self.pause_reset_command = -1
+
             if self.pause_reset_command == -1:
                 pass
 
-            self.master.after(1000, self.counterCyclic)
+            self.master.after(1000, self.stopWatchCyclic)
+    ########################################################## StopWatch functionality ################################################################################
 
-    # This function updates the gui to correspond to the chosen app type: stopwatch, countdown or watch
+    ########################################################## CountDown functionality ################################################################################
+
+
+
+    ########################################################## CountDown functionality ################################################################################
+
+
+    ########################################################## Gui Functionality       ################################################################################
     def update_tool_gui(self):
         if self.chosen_gui == "StopWatch":
+            self.canvas_funct_app.delete("all")
             self.current_time.set("00:00") # when you reset to stopwatch the timer gets reseted
             #print("Chosen functionality: %s" % self.chosen_gui)
             digits = Label(self, textvariable=self.current_time, background="lavender", anchor=CENTER)
             digits.config(font=("Courier", 200))
 
-            digits_window = self.canvas.create_window(0, 320, anchor="w", width=800, height=540, window=digits)
+            digits_window = self.canvas_funct_app.create_window(0, 0, anchor="nw", width=800, height=540, window=digits)
 
             start_button = tk.Button(self, text="Start", bg="green2", command=lambda : self.startCounter())
             stop_button = tk.Button(self, text="Stop/Reset", bg="red", command=lambda : self.stopCounter())
-            start_button_window = self.canvas.create_window(0, 640, anchor="sw", width=400, height=50, window=start_button)
-            stop_button_window = self.canvas.create_window(400, 640, anchor="sw", width=400, height=50, window=stop_button)
+            start_button_window = self.canvas_funct_app.create_window(0, 590, anchor="sw", width=400, height=50, window=start_button)
+            stop_button_window = self.canvas_funct_app.create_window(400, 590, anchor="sw", width=400, height=50, window=stop_button)
 
             self.pause_reset_command = -1
-            self.counterCyclic()
+            self.stopWatchCyclic()
 
         elif self.chosen_gui == "CountDown":
-            print("Chosen functionality: %s" % self.chosen_gui)
+            self.canvas_funct_app.delete("all")
+
         else:
-            print("Chosen functionality: %s" % self.chosen_gui)
+            self.canvas_funct_app.delete("all")
+
+     ########################################################## Gui Functionality       ################################################################################
+
 
 watch = Tk()
 watch.title("Watch")
