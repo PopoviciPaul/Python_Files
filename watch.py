@@ -21,7 +21,7 @@ class Application(tk.Frame):
         self.local_time = StringVar()
         self.local_time.set("00:00:00")
         self.current_date = StringVar()
-        self.current_date.set("10/10:2012")
+        self.current_date.set("10/10/2012")
         ##################################
 
         self.chosen_gui = "StopWatch"
