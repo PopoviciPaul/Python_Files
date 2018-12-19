@@ -3,9 +3,8 @@ from tkinter import *
 from tkinter.ttk import *
 from tkinter import messagebox
 from tkinter import Menu
-import time
-import datetime
 import re
+
 
 # Define the application class where we will implement our widgets
 class Application(tk.Frame):
@@ -14,8 +13,7 @@ class Application(tk.Frame):
         self.grid()
         self.current_time = StringVar() # the variable which displays the current time on the stopwatch
         self.current_time.set("98:45")
-        self.pause_reset_command = 0
-        self.counter = 0
+        self.pause_reset_command = -1
 
         self.chosen_gui = "StopWatch"
         self.canvas = Canvas(self, width=800, height = 640, bg="gray") # IF YOU DO .PACK() HERE IT WILL RETURN NONE AND THEN YOU WILL HAVE PROBLEMS BECAUSE .PACK() RETURNS A 'NONE' TYPE OBJECT
@@ -36,48 +34,25 @@ class Application(tk.Frame):
         countdown_window = self.canvas.create_window(250, 0, anchor="nw", width=300, height=50, window=countdown_select)
         watch_window = self.canvas.create_window(550, 0, anchor="nw", width=250, height=50, window=watch_select)
 
-    def startCounter(self, start_from):
-        if self.pause_reset_command == 0:
-            # start_from = current timer value(at first is 00)
-            regex_seconds = r"\d+$"
-            regex_minutes = r"^\d+"
-            seconds = re.findall(regex_seconds, start_from)
-            minutes = re.findall(regex_minutes, start_from)
-
-            if seconds[0][0] == '0':
-                seconds = seconds[0][1]
-            else:
-                seconds = seconds[0]
-            seconds = int(seconds) # check the value of seconds
-            seconds += 1
-
-            if minutes[0][0] == '0':
-                minutes = minutes[0][1]
-            else:
-                minutes = minutes[0]
-            minutes = int(minutes) # check the value of minutes
-
-            if minutes <= 98:            # when minutes reach 99 stop don't do anything
-                if seconds == 60:
-                    minutes = minutes+1
-                    seconds = 0
-                self.current_time.set("{0:0>2}".format(minutes) + ":" + "{0:0>2}".format(seconds))
-                start_from = self.current_time.get() # update the start_time for the next loop
-            else:
-                pass
-            self.master.after(1000, self.startCounter, start_from)
-
-        elif self.pause_reset_command == 1:                # implement pause functionality here
-            pass                                           # do nothing just wait for re-start or reset
-
-        else:                                              # implement reset functionality here
-            pass                                           # reset functionality implemented in StopCounter function
+    def startCounter(self):
+        self.pause_reset_command = 0
 
     def stopCounter(self):
         self.pause_reset_command += 1
-        if self.pause_reset_command == 2:
-            self.current_time.set("00:00")                 # reset the timer than wait to start again
-            self.pause_reset_command = 0
+
+    def counterCyclic(self):
+        if self.chosen_gui == "StopWatch":
+            if self.pause_reset_command == 0:
+                print("cyclic every second")
+            if self.pause_reset_command == 1:
+                print("paused")
+            if self.pause_reset_command == 2:
+                print("reset")
+                self.pause_reset_command = -1
+            if self.pause_reset_command == -1:
+                pass
+
+            self.master.after(1000, self.counterCyclic)
 
     # This function updates the gui to correspond to the chosen app type: stopwatch, countdown or watch
     def update_tool_gui(self):
@@ -88,10 +63,13 @@ class Application(tk.Frame):
 
             digits_window = self.canvas.create_window(0, 320, anchor="w", width=800, height=540, window=digits)
 
-            start_button = tk.Button(self, text="Start", bg="green2", command=lambda : self.startCounter(self.current_time.get()))
+            start_button = tk.Button(self, text="Start", bg="green2", command=lambda : self.startCounter())
             stop_button = tk.Button(self, text="Stop/Reset", bg="red", command=lambda : self.stopCounter())
             start_button_window = self.canvas.create_window(0, 640, anchor="sw", width=400, height=50, window=start_button)
             stop_button_window = self.canvas.create_window(400, 640, anchor="sw", width=400, height=50, window=stop_button)
+
+            self.pause_reset_command = -1
+            self.counterCyclic()
 
         elif self.chosen_gui == "CountDown":
             print("Chosen functionality: %s" % self.chosen_gui)
