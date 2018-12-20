@@ -4,6 +4,7 @@ from tkinter.ttk import *
 from tkinter import messagebox
 from tkinter import Menu
 import re
+import datetime
 
 # Define the application class where we will implement our widgets
 class Application(tk.Frame):
@@ -21,7 +22,7 @@ class Application(tk.Frame):
         self.local_time = StringVar()
         self.local_time.set("00:00:00")
         self.current_date = StringVar()
-        self.current_date.set("10/10/2012")
+        self.current_date.set("2012/10/30")
         ##################################
 
         self.chosen_gui = "StopWatch"
@@ -170,12 +171,51 @@ class Application(tk.Frame):
             self.canvas_funct_app.delete("all")
             local_time = Label(self, textvariable=self.local_time, background="lavender", anchor=CENTER)
             local_time.config(font=("Courier", 100))
-            local_time_window = self.canvas_funct_app.create_window(0, 0, anchor="nw", width=800, height=450, window=local_time)
+            local_time_window = self.canvas_funct_app.create_window(0, 0, anchor="nw", width=800, height=450, window=local_time) ### HOUR:MINUTES:SECONDS
 
-            date = Label(self, textvariable=self.current_date, background="lavender", anchor=CENTER)
+            date = Label(self, textvariable=self.current_date, background="lavender", anchor=CENTER) #### YEAR/MONTH/DATY
             date.config(font=("Courier", 30))
             date_time_window = self.canvas_funct_app.create_window(0, 320, anchor="nw", width=800, height=90, window=date)
 
+            alarm_label = Label(self, text="Alarm: ", background="lavender", anchor=CENTER)
+            alarm_label.config(font=("Courier", 20))
+            alarm_label_window = self.canvas_funct_app.create_window(60, 500, anchor="nw", width=100, height=50, window=alarm_label)
+
+            select_year = Spinbox(self, from_=2018, to=2050)
+            select_year_window = self.canvas_funct_app.create_window(170, 500, anchor="nw", width=50, height=40, window=select_year)
+
+            slash_label = Label(self, text="/", background="lavender", anchor=CENTER)
+            slash_label.config(font=("Courier", 25))
+            slash_label_window = self.canvas_funct_app.create_window(220, 500, anchor="nw", height=50, window=slash_label)
+
+            select_month = Spinbox(self, from_=1, to=12)
+            select_month_window = self.canvas_funct_app.create_window(240, 500, anchor="nw", width=50, height=40, window=select_month)
+
+            slash_label2 = Label(self, text="/", background="lavender", anchor=CENTER)
+            slash_label2.config(font=("Courier", 25))
+            slash_label_window2 = self.canvas_funct_app.create_window(290, 500, anchor="nw", height=50, window=slash_label2)
+
+            select_day = Spinbox(self, from_=1, to=31)
+            select_day_window = self.canvas_funct_app.create_window(310, 500, anchor="nw", width=50, height=40, window=select_day)
+
+            select_hour = Spinbox(self, from_=1, to=24)
+            select_hour_window = self.canvas_funct_app.create_window(380, 515, anchor="nw", width=50, height=25, window=select_hour)
+
+            colon_label = Label(self, text="/", background="lavender", anchor=CENTER)
+            colon_label.config(font=("Courier", 15))
+            colon_label = self.canvas_funct_app.create_window(430, 505, anchor="nw", height=50, window=colon_label)
+
+            select_minute = Spinbox(self, from_=1, to=59)
+            select_minute_window = self.canvas_funct_app.create_window(450, 515, anchor="nw", width=50, height=25, window=select_minute)
+
+            set_button = tk.Button(self, text="Set", bg="#E3CF57")
+            set_button_window = self.canvas_funct_app.create_window(520, 540, anchor="sw", width=100, height=70, window=set_button)
+
+            clear_button = tk.Button(self, text="Clear", bg="#CD3333")
+            clear_button_window = self.canvas_funct_app.create_window(650, 540, anchor="sw", width=100, height=70, window=clear_button)
+
+            #now = datetime.datetime.now()
+            #print(now)
      ########################################################## Gui Functionality       ################################################################################
 
 
